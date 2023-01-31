@@ -56,10 +56,13 @@ function load_mailbox(mailbox) {
       // Create div for each email
       const email = document.createElement('div');
       const result = `
-      <h3 class='card-title'>${contents.sender}</h3>
-      ${contents.subject}
-      `;
-      email.className = 'card mb-2';
+      <div class="justify-content-start">
+        <span class='font-weight-bold p-1'>${contents.sender}</span>
+        <span class='p-1 text-secondary'>${contents.subject}</span>
+        <span class="float-right text-muted">${contents.timestamp}</span>
+      </div>
+     `;
+      email.className = 'card mb-2 p-2';
       email.innerHTML = result
 
       // Add email to DOM
