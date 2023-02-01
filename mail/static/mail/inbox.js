@@ -85,8 +85,15 @@ function load_mailbox(mailbox) {
     emails.forEach(contents => {
       // Create div for each email
       const email = document.createElement('div');
-      // TODO: Change background color depending on if email is read or not
-      // Probably create a variable and pass into class of email
+      
+      // Change background color depending on if email is read or not
+      let bgColor = '';
+      if (contents.read === false) {
+        bgColor = 'bg-white';
+      } else {
+        bgColor = 'bg-light';
+      }
+      
       const result = `
       <div class="justify-content-start">
         <span class='font-weight-bold p-1'>${contents.sender}</span>
@@ -94,7 +101,7 @@ function load_mailbox(mailbox) {
         <span class="float-right text-muted">${contents.timestamp}</span>
       </div>
      `;
-      email.className = 'card mb-2 p-2';
+      email.className = `card mb-2 p-2 ${bgColor}`;
       email.innerHTML = result.trim();
       email.dataset.id = contents.id;
       email.addEventListener('click', load_email);
