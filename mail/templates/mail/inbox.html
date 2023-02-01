@@ -30,6 +30,26 @@
             <input type="submit" class="btn btn-primary"/>
         </form>
     </div>
+
+    <div id="email-content">
+        <div class="col">
+            <div class="row"><span class="font-weight-bold mr-1">From:</span><span id='email-sender'></span></div>
+        </div>
+        <div class="col">
+            <div class="row"><span class="font-weight-bold mr-1">To:</span><span id='email-recipients'></span></div>
+        </div>
+        <div class="col">
+            <div class="row"><span class="font-weight-bold mr-1">Subject:</span><span id='email-subject'></span></div>
+        </div>
+        <div class="col">
+            <div class="row"><span class="font-weight-bold mr-1">Timestamp:</span><span id='email-timestamp'></span></div>
+        </div>
+        <button id="reply" class="btn btn-outline-primary mt-2">Reply</button>
+        <hr>
+        <div class="card p-2">
+            <p id="email-body" class="card-text"></p>
+        </div>
+    </div>
 {% endblock %}
 
 {% block script %}

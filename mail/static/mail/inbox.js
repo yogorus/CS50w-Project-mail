@@ -14,6 +14,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-content').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -38,11 +39,40 @@ function compose_email() {
   }
 }
 
+function load_email() {
+
+  // Show email and hide other views
+  document.querySelector('#email-content').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#emails-view').style.display = 'none';
+
+  let id = this.dataset.id;
+  fetch(`emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+    // Log content of email
+    console.log(email);
+    
+    // Render email
+    document.querySelector('#email-sender').innerHTML = `${email.sender}`;
+    document.querySelector('#email-recipients').innerHTML = `${email.recipients}`;
+    document.querySelector('#email-subject').innerHTML = `${email.subject}`;
+    document.querySelector('#email-timestamp').innerHTML = `${email.timestamp}`;
+    document.querySelector('#email-body').innerHTML = `${email.body}`;
+
+    // Add reply
+
+    // Mark as read
+  })
+
+}
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-content').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -55,6 +85,8 @@ function load_mailbox(mailbox) {
     emails.forEach(contents => {
       // Create div for each email
       const email = document.createElement('div');
+      // TODO: Change background color depending on if email is read or not
+      // Probably create a variable and pass into class of email
       const result = `
       <div class="justify-content-start">
         <span class='font-weight-bold p-1'>${contents.sender}</span>
@@ -63,7 +95,9 @@ function load_mailbox(mailbox) {
       </div>
      `;
       email.className = 'card mb-2 p-2';
-      email.innerHTML = result
+      email.innerHTML = result.trim();
+      email.dataset.id = contents.id;
+      email.addEventListener('click', load_email);
 
       // Add email to DOM
       document.querySelector('#emails-view').append(email);
@@ -71,4 +105,5 @@ function load_mailbox(mailbox) {
     });
 
   });
+ 
 }
