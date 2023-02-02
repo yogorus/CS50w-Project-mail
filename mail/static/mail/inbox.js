@@ -37,6 +37,8 @@ function compose_email() {
       load_mailbox('sent')
       console.log(result);
     });
+
+    // Prevent form from reloading the page
     return false;
   }
 }
@@ -62,9 +64,16 @@ function load_email() {
     document.querySelector('#email-timestamp').innerHTML = `${email.timestamp}`;
     document.querySelector('#email-body').innerHTML = `${email.body}`;
 
-    // Add reply
+    // Add Archive
 
-    // Mark as read
+    // Add reply
+  });
+  // Mark as read
+  fetch(`emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
   })
 
 }
@@ -110,9 +119,6 @@ function load_mailbox(mailbox) {
 
       // Add email to DOM
       document.querySelector('#emails-view').append(email);
-      
     });
-
   });
- 
 }
