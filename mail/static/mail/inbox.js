@@ -51,6 +51,7 @@ function load_email() {
   document.querySelector('#emails-view').style.display = 'none';
 
   let id = this.dataset.id;
+  let mailbox = this.dataset.mailbox;
   fetch(`emails/${id}`)
   .then(response => response.json())
   .then(email => {
@@ -64,21 +65,38 @@ function load_email() {
     document.querySelector('#email-timestamp').innerHTML = `${email.timestamp}`;
     document.querySelector('#email-body').innerHTML = `${email.body}`;
 
-    // Add Archive
-
-    // Add reply
+    // Show or hide button depending on mailbox
+    archiveBtn = document.querySelector('#archive');
+    archiveBtn.style.display = (mailbox === 'sent') ? 'none' : 'block';
+    archiveBtn.innerHTML = !email.archived ? 'Archive email' : 'Unarchive email';
+   
+    // Add PUT request on click
+    archiveBtn.onclick = () => {
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: !email.archived
+        })
+      })
+      .then(() => load_mailbox('inbox'))
+    }
+    
+    // Mark as read
+    if(!email.read){
+      fetch(`emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          read: true
+        })
+      })
+    }
   });
-  // Mark as read
-  fetch(`emails/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      read: true
-    })
-  })
-
 }
 
 function load_mailbox(mailbox) {
+  
+  // Clear previous mailbox
+  document.querySelector('#emails-view').innerHTML = '';
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -115,10 +133,15 @@ function load_mailbox(mailbox) {
       email.className = `card mb-2 p-2 ${bgColor}`;
       email.innerHTML = result.trim();
       email.dataset.id = contents.id;
+      email.dataset.mailbox = mailbox;
       email.addEventListener('click', load_email);
 
       // Add email to DOM
       document.querySelector('#emails-view').append(email);
     });
   });
+}
+
+function archive() {
+
 }
