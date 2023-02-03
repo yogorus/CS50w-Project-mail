@@ -50,8 +50,8 @@ function load_email() {
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
 
-  let id = this.dataset.id;
-  let mailbox = this.dataset.mailbox;
+  const id = this.dataset.id;
+  const mailbox = this.dataset.mailbox;
   fetch(`emails/${id}`)
   .then(response => response.json())
   .then(email => {
