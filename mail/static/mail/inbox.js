@@ -4,23 +4,27 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email('', '', ''));
 
   // By default, load the inbox
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(recipients, subject, body) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#email-content').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
-
+  
+  // Prefill body
+  // const result = `
+  // On TIME USER wrote:\n---------------------------\n${body}`;
+  
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-recipients').value = recipients;
+  document.querySelector('#compose-subject').value = subject;
+  document.querySelector('#compose-body').value = body;
 
   // Make request
   document.querySelector('#compose-form').onsubmit = () => {
@@ -63,7 +67,7 @@ function load_email() {
     document.querySelector('#email-recipients').innerHTML = `${email.recipients}`;
     document.querySelector('#email-subject').innerHTML = `${email.subject}`;
     document.querySelector('#email-timestamp').innerHTML = `${email.timestamp}`;
-    document.querySelector('#email-body').innerHTML = `${email.body}`;
+    document.querySelector('#email-body').innerHTML = `${email.body.replace(/\n\r?/g, '<br />')}`; // I googled the replace thing
 
     // Show or hide button depending on mailbox
     archiveBtn = document.querySelector('#archive');
@@ -80,6 +84,12 @@ function load_email() {
       })
       .then(() => load_mailbox('inbox'))
     }
+
+    // Reply logic
+    replyBtn = document.querySelector('#reply');
+    const subject = email.subject.includes('Re:') ? email.subject : `Re: ${email.subject}`;
+    const body = `\n\n---------------------------\nOn ${email.timestamp} ${email.sender} wrote:\n${email.body}`;
+    replyBtn.addEventListener('click', () => compose_email(email.sender, subject, body));
     
     // Mark as read
     if(!email.read){
@@ -116,7 +126,7 @@ function load_mailbox(mailbox) {
       const email = document.createElement('div');
       
       // Change background color depending on if email is read or not
-      let bgColor = '';
+      let bgColor;
       if (contents.read === false) {
         bgColor = 'bg-white';
       } else {
@@ -142,6 +152,3 @@ function load_mailbox(mailbox) {
   });
 }
 
-function archive() {
-
-}
